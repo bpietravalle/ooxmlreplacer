@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 # -*- coding: utf-8 -*-
 from __future__ import print_function
-
+import argparse
 import os.path
 from copy import deepcopy
 
@@ -176,3 +176,17 @@ def replace(infile, outfile, find_what, replace_with, match_case=False):
         part['content'] = __replace_part(etree.fromstring(part['content']), find_what, replace_with, match_case)
 
     save_parts(parts, infile, outfile)
+
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Find and Replace script for MS Word documents (docx/docm)')
+    parser.add_argument('infile', metavar='INFILE', action='store', help='Specify the target file path.')
+    parser.add_argument('outfile', metavar='OUTFILE', action='store', help='Specify the resultant file path')
+    parser.add_argument('-f', '--findwhat', dest='find_what', required=True, action='store',
+                        help='Specify characters to search for.')
+    parser.add_argument('-r', '--replacewith', dest='replace_with', action='store',
+                        help='Specify characters to replace with. ' +
+                             'If nothing is specified, characters matched will be deleted from the resultant file.')
+    parser.add_argument('-m', '--matchcase', dest='match_case', action='store_true', help='Case-sensitive search')
+    args = parser.parse_args()
+    replace(args.infile, args.outfile, args.find_what, args.replace_with, args.match_case)
