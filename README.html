@@ -355,8 +355,8 @@ ul.auto-toc {
 <h2>Using ooxmlreplacer in your script</h2>
 <pre class="literal-block">
 from ooxmlreplacer import docxreplacer, pptxreplacer
-docxreplacer.replace(infile='test.docx', outfile='test.docx', find_what='foo', replace_with='bar', match_case=False)
-pptxreplacer.replace(infile='test.pptx', outfile='test.pptx', find_what='foo', replace_with='bar', match_case=False)
+docxreplacer.replace(infile='test.docx', outfile='test.docx', find_what='foo', replace_with='bar', match_case=False, output_paragraphs=False)
+pptxreplacer.replace(infile='test.pptx', outfile='test.pptx', find_what='foo', replace_with='bar', match_case=False, output_paragraphs=False)
 </pre>
 </div>
 <div class="section" id="running-ooxmlreplacer-from-commandline">

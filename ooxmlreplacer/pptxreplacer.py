@@ -125,25 +125,27 @@ def __merge_runs(p):
             break
 
 
-def __replace_paragraph(paragraph, find_what, replace_with, match_case):
+def __replace_paragraph(paragraph, find_what, replace_with, match_case, output_paragraphs):
     text = __get_plain_text(paragraph)
 
     if __contains(find_what, text, match_case):
-        print('OLD: ' + text)
+        if output_paragraphs:
+            print('OLD: ' + text)
         __split_into_runs(paragraph)
         __replace_runs(paragraph, find_what, replace_with, match_case)
         __merge_runs(paragraph)
-        print('NEW: ' + __get_plain_text(paragraph), end='\n\n')
+        if output_paragraphs:
+            print('NEW: ' + __get_plain_text(paragraph), end='\n\n')
 
 
-def __replace_part(part, find_what, replace_with, match_case):
+def __replace_part(part, find_what, replace_with, match_case, output_paragraphs):
     for p in part.iterdescendants(A + 'p'):
-        __replace_paragraph(p, find_what, replace_with, match_case)
+        __replace_paragraph(p, find_what, replace_with, match_case, output_paragraphs)
 
     return etree.tostring(part, encoding='utf-8', xml_declaration=True, standalone=True)
 
 
-def replace(infile, outfile, find_what, replace_with, match_case=False):
+def replace(infile, outfile, find_what, replace_with, match_case=False, output_paragraphs=False):
     u"""Replace find_what with replace_with in pptx or pptm.
     :param infile: file in which replacement will be performed
     :type infile: str | unicode
@@ -154,6 +156,8 @@ def replace(infile, outfile, find_what, replace_with, match_case=False):
     :param replace_with: text to replace find_what with
     :type replace_with: str | unicode
     :param match_case: True to make search case-sensitive
+    :type match_case: bool
+    :param output_paragraphs: True to output the paragraphs replaced
     :type match_case: bool
     """
     if not os.path.isfile(infile):
@@ -173,9 +177,11 @@ def replace(infile, outfile, find_what, replace_with, match_case=False):
 
     parts = extract_parts(infile)
     for part in parts:
-        part['content'] = __replace_part(etree.fromstring(part['content']), find_what, replace_with, match_case)
+        part['content'] = __replace_part(etree.fromstring(part['content']), find_what, replace_with, match_case,
+                                         output_paragraphs)
 
     save_parts(parts, infile, outfile)
+
 
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description='Find and Replace script for MS PowerPoint documents (pptx/pptm)')
@@ -187,6 +193,7 @@ if __name__ == '__main__':
                         help='Specify characters to replace with. ' +
                              'If nothing is specified, characters matched will be deleted from the resultant file.')
     parser.add_argument('-m', '--matchcase', dest='match_case', action='store_true', help='Case-sensitive search')
+    parser.add_argument('-o', '--output-paragraphs', dest='output_paragraphs', action='store_true',
+                        help='Outputs the paragraphs replaced')
     args = parser.parse_args()
-    replace(args.infile, args.outfile, args.find_what, args.replace_with, args.match_case)
-
+    replace(args.infile, args.outfile, args.find_what, args.replace_with, args.match_case, args.output_paragraphs)

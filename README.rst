@@ -19,8 +19,8 @@ Using ooxmlreplacer in your script
 ::
 
     from ooxmlreplacer import docxreplacer, pptxreplacer
-    docxreplacer.replace(infile='test.docx', outfile='test.docx', find_what='foo', replace_with='bar', match_case=False)
-    pptxreplacer.replace(infile='test.pptx', outfile='test.pptx', find_what='foo', replace_with='bar', match_case=False)
+    docxreplacer.replace(infile='test.docx', outfile='test.docx', find_what='foo', replace_with='bar', match_case=False, output_paragraphs=False)
+    pptxreplacer.replace(infile='test.pptx', outfile='test.pptx', find_what='foo', replace_with='bar', match_case=False, output_paragraphs=False)
 
 
 Running ooxmlreplacer from commandline
