@@ -9,6 +9,8 @@ from lxml import etree
 
 from utils import XML, A, to_unicode, extract_parts, save_parts
 
+count = 0
+
 
 def __contains(find_what, text, match_case):
     if not match_case:
@@ -127,7 +129,7 @@ def __merge_runs(p):
 
 def __replace_paragraph(paragraph, find_what, replace_with, match_case, output_paragraphs):
     text = __get_plain_text(paragraph)
-
+    global count
     if __contains(find_what, text, match_case):
         if output_paragraphs:
             print('OLD: ' + text)
@@ -136,6 +138,7 @@ def __replace_paragraph(paragraph, find_what, replace_with, match_case, output_p
         __merge_runs(paragraph)
         if output_paragraphs:
             print('NEW: ' + __get_plain_text(paragraph), end='\n\n')
+        count += 1
 
 
 def __replace_part(part, find_what, replace_with, match_case, output_paragraphs):
@@ -175,12 +178,16 @@ def replace(infile, outfile, find_what, replace_with, match_case=False, output_p
     find_what = to_unicode(find_what)
     replace_with = to_unicode(replace_with)
 
+    global count
+    count = 0
+
     parts = extract_parts(infile)
     for part in parts:
         part['content'] = __replace_part(etree.fromstring(part['content']), find_what, replace_with, match_case,
                                          output_paragraphs)
 
     save_parts(parts, infile, outfile)
+    print('Paragraphs replaced: {0}'.format(count))
 
 
 if __name__ == '__main__':
